@@ -6,16 +6,13 @@ class Database{
         this.connect()
     }
     connect(){
-        // if (1 === 1)
-        // {
-        //     mongoose.set('debug', true);
-        //     mongoose.set('debug', {color:true})
-        // }
-        mongoose.connect(connectString)
+        mongoose.connect(connectString,{
+            dbName:mongo.database,
+        })
         .then( _ => {
             console.log("INFO:   Connected to MongoDB");
         }
-        ).catch(error => console.log(`Error: ${error}!`))
+        ).catch(error => console.log(`Error:  ${error}!`))
     }
     // 
     static getInstance(){
