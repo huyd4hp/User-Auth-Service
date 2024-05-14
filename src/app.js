@@ -12,6 +12,7 @@ app.use(express.json())
 require('./databases/mongo')
 clientRedis.connect()
 // Router
+app.use("/api/v1",require('./router'))
 // Handle error
 app.use((req,res,next) => {
     const error = new Error("Not Found")
