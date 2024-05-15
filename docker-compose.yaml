@@ -16,9 +16,11 @@ services:
     restart: always
     volumes:
       - ./docker/redis-stack/:/data
+      - ./docker/redis-stack/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
       - "${REDIS_PORT}:6379" 
       - "${REDIS_INSIGHT_PORT}:8001"
+    command: ["redis-server", "--protected-mode", "no"]
   
 
 
