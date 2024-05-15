@@ -30,6 +30,30 @@ class UserService {
     const newUser = await userModel.create(data);
     return newUser;
   };
+  static ResetPassword = async (userid, newPassword) => {
+    // 1. Xác thực userid
+    try {
+      const user = await userModel.findById(userid);
+    } catch (err) {
+      return false;
+    }
+    // 2. Đổi sang newPassword
+    const salt = await bcrypt.genSalt(1024);
+    const hashPassword = await bcrypt.hash(newPassword, salt);
+    const updated_user = await userModel.findByIdAndUpdate(
+      userid,
+      {
+        password: hashPassword,
+      },
+      {
+        new: true,
+      }
+    );
+    if (!updated_user) {
+      return false;
+    }
+    return true;
+  };
   static DeleteUserById = async (id) => {
     // 1. Xoá document trong MongoDB
     const action = await userModel.deleteOne({ _id: id }).lean();
@@ -41,11 +65,23 @@ class UserService {
     const newUser = await userModel.findByIdAndUpdate(userid, newProfile, {
       new: true,
     });
+    return newUser;
   };
-  static UpdatePassword = async (userid, newPassword) => {
+  static UpdatePassword = async (userid, oldPassword, newPassword) => {
+    // 1. So sánh currentPassword vs oldPassword
+    try {
+      const user = await userModel.findById(userid);
+      const checkPassword = bcrypt.compareSync(oldPassword, user.password);
+      if (!checkPassword) {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+    // 2. Đổi sang newPassword
     const salt = await bcrypt.genSalt(1024);
     const hashPassword = await bcrypt.hash(newPassword, salt);
-    const user = await userModel.findByIdAndUpdate(
+    const updated_user = await userModel.findByIdAndUpdate(
       userid,
       {
         password: hashPassword,
@@ -54,10 +90,10 @@ class UserService {
         new: true,
       }
     );
-    if (!user) {
-      return null;
+    if (!updated_user) {
+      return false;
     }
-    return user;
+    return true;
   };
 }
 module.exports = UserService;

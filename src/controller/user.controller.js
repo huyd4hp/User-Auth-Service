@@ -1,5 +1,19 @@
 const UserService = require("../service/user.services");
 class UserController {
+  static AddUser = async (req, res, next) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        status: "error",
+        message: [
+          email ? null : "email is required",
+          password ? null : "password is required",
+        ].filter(Boolean),
+      });
+    }
+    const newUser = await UserService.AddUser(req.body);
+    return res.status(201).json({ status: "success", data: newUser });
+  };
   static GetUsers = async (req, res, next) => {
     let { page } = req.body;
     if (!page) {
@@ -85,7 +99,11 @@ class UserController {
         message: "New password and re password are not the same",
       });
     }
-    const user = await UserService.UpdatePassword(CLIENT_ID, newPassword);
+    const user = await UserService.UpdatePassword(
+      CLIENT_ID,
+      oldPassword,
+      newPassword
+    );
     if (!user) {
       return res
         .status(500)

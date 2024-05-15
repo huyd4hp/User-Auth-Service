@@ -14,6 +14,10 @@ class AuthController {
         ].filter(Boolean),
       });
     }
+    // 1.1 Không được tạo với Role là Admin
+    if (req.body.role === "Admin") {
+      return res.status(401).json({ status: "error", message: "Unauthorized" });
+    }
     // 2. Gọi Service tạo User mới
     const newUser = await AuthService.SignUp(req.body);
     if (newUser) {
@@ -99,6 +103,62 @@ class AuthController {
     return res.status(200).json({
       status: "success",
       access_token: newToken,
+    });
+  };
+  static ForgotPassword = async (req, res, next) => {
+    const { email } = req.body;
+    if (!email) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "email is required" });
+    }
+    const action = await AuthService.ForgotPassword(email);
+    if (action === -1) {
+      return res.status(404).json({
+        status: "error",
+        message: "Email not found",
+      });
+    }
+    if (action === 1) {
+      return res.status(429).json({
+        status: "error",
+        message: "Too many requests. Please check your email",
+      });
+    }
+    if (action === true) {
+      return res.status(200).json({
+        status: "success",
+        message: "Please check your email",
+      });
+    }
+    if (action === false) {
+      return res.status(500).json({
+        status: "error",
+        message: "Please try again later",
+      });
+    }
+  };
+  static VerifyOTP = async (req, res, next) => {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({
+        status: "error",
+        message: [
+          email ? null : "email is required",
+          otp ? null : "otp is required",
+        ].filter(Boolean),
+      });
+    }
+    const action = await AuthService.VerifyOTP(email, otp);
+    if (!action) {
+      return res.status(401).json({
+        status: "error",
+        message: "Invalid OTP",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      message: "Verify successfully",
     });
   };
 }
