@@ -1,7 +1,6 @@
 const JWT = require("jsonwebtoken");
 const access_key = require("../config").access_key;
 const refresh_key = require("../config").refresh_key;
-const clientRedis = require("../databases/redis");
 class JWTFactory {
   static generalAccessToken = (payload) => {
     const AT = JWT.sign(payload, access_key, {
