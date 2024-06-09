@@ -1,7 +1,8 @@
 services:
   mongo:
     image: mongo:latest
-    container_name: mongodb
+    container_name: UserDB
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
@@ -18,9 +19,6 @@ services:
       - ./docker/redis-stack/:/data
       - ./docker/redis-stack/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
-      - "${REDIS_PORT}:6379" 
+      - "${REDIS_PORT}:6379"
       - "${REDIS_INSIGHT_PORT}:8001"
     command: ["redis-server", "--protected-mode", "no"]
-  
-
-
