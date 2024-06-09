@@ -7,7 +7,4 @@ const generatePassword = (
   Array.from(crypto.randomFillSync(new Uint32Array(length)))
     .map((x) => characters[x % characters.length])
     .join("");
-
-console.log(generatePassword());
-
 module.exports = generatePassword;
