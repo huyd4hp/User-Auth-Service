@@ -53,6 +53,40 @@ class UserController {
     }
     return res.status(404).json({ status: "error", message: "User not found" });
   };
+  static UnblockUser = async (req, res, next) => {
+    const UserID = req.params.id;
+    const user = await UserService.FindUserById(UserID);
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+    await UserService.UpdateProfile(UserID, {
+      isActive: 1,
+    });
+    return res.status(200).json({
+      status: "success",
+      message: `User ${UserID} has been unblocked`,
+    });
+  };
+  static BlockUser = async (req, res, next) => {
+    const UserID = req.params.id;
+    const user = await UserService.FindUserById(UserID);
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+    await UserService.UpdateProfile(UserID, {
+      isActive: 0,
+    });
+    return res.status(200).json({
+      status: "success",
+      message: `User ${UserID} has been blocked`,
+    });
+  };
   static GetProfile = async (req, res, next) => {
     const CLIENT_ID = req.headers["CLIENT_ID"];
     const user = await UserService.FindUserById(CLIENT_ID);
