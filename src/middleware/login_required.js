@@ -23,7 +23,7 @@ const login_required = async (req, res, next) => {
     // 3.2 User bị lộ AccessToken
     return res.status(401).json({
       status: "error",
-      message: "Invalid token",
+      message: "Expired Session Error",
     });
   }
   // 4. Chấp nhận AccessToken

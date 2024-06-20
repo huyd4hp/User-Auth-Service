@@ -1,4 +1,5 @@
 const UserService = require("../service/user.services");
+const producer = require("../helper/kafka_producer");
 class UserController {
   static AddUser = async (req, res, next) => {
     const { email, password } = req.body;
@@ -111,7 +112,23 @@ class UserController {
     if (data.hasOwnProperty("password")) {
       delete data.password;
     }
+    if (data.hasOwnProperty("role")) {
+      delete data.role;
+    }
+    if (data.hasOwnProperty("_id")) {
+      delete data._id;
+    }
+    if (data.hasOwnProperty("__v")) {
+      delete data.__v;
+    }
+    if (data.hasOwnProperty("email")) {
+      delete data.email;
+    }
+
     const newProfile = await UserService.UpdateProfile(CLIENT_ID, data);
+    producer.sendMessage("update_profile", [
+      { key: CLIENT_ID, value: JSON.stringify(req.body) },
+    ]);
     return res.status(200).json({ status: "success", data: newProfile });
   };
   static UpdatePassword = async (req, res, next) => {
