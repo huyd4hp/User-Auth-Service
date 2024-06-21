@@ -1,4 +1,4 @@
-const { Kafka } = require("kafkajs");
+const { Kafka, Partitioners } = require("kafkajs");
 
 class KafkaProducer {
   constructor({ clientId, brokers }) {
@@ -6,7 +6,9 @@ class KafkaProducer {
       clientId,
       brokers,
     });
-    this.producer = this.kafka.producer();
+    this.producer = this.kafka.producer({
+      createPartitioner: Partitioners.LegacyPartitioner,
+    });
   }
   async connect() {
     await this.producer.connect();
