@@ -1,5 +1,5 @@
 const { Kafka, Partitioners } = require("kafkajs");
-
+const { KAFKA_HOST, KAFKA_PORT } = require("../config");
 class KafkaProducer {
   constructor({ clientId, brokers }) {
     this.kafka = new Kafka({
@@ -26,7 +26,7 @@ class KafkaProducer {
 }
 const producer = new KafkaProducer({
   clientId: "my-app",
-  brokers: ["localhost:9092"],
+  brokers: [`${KAFKA_HOST}:${KAFKA_PORT}`],
 });
 producer.connect();
 module.exports = producer;

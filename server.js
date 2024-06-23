@@ -1,13 +1,12 @@
 const app = require("./src/app");
+const { APP_PORT } = require("./src/config");
 
-const PORT = process.env.SERVICE_PORT || 5001;
-
-const server = app.listen(PORT, () => {
-  console.log(`INFO:   Application listening on ${PORT}`);
+const server = app.listen(APP_PORT, () => {
+  console.log(`Application listening on ${APP_PORT}`);
 });
 
 process.on("SIGINT", () => {
-  console.log("INFO:   Application stopped");
+  console.log("Application stopped");
   server.close();
   process.exit(0);
 });

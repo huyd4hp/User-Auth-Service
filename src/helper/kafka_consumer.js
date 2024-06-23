@@ -1,4 +1,5 @@
 const { Kafka } = require("kafkajs");
+const { KAFKA_HOST, KAFKA_PORT } = require("../config");
 
 class KafkaConsumer {
   constructor({ clientId, brokers, groupId, topic }) {
@@ -34,7 +35,7 @@ class KafkaConsumer {
 
 const consumer = new KafkaConsumer({
   clientId: "my-app",
-  brokers: ["localhost:9092"],
+  brokers: [`${KAFKA_HOST}:${KAFKA_PORT}`],
   groupId: "my_group_id",
   topic: "booking",
 });

@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const clientRedis = require("./databases/redis");
-const run = require("./helper/kafka_consumer");
+const mailService = require("./helper/mail");
 // App
 const app = express();
 // Middleware
@@ -10,10 +10,9 @@ app.use(morgan("dev"));
 app.use(helmet());
 app.use(express.json());
 // Database
+mailService.connection();
 require("./databases/mongo");
 clientRedis.connect();
-// KafkaConsumer
-// run().catch(console.error);
 // Router
 app.use("/api/v1", require("./router"));
 // Handle error

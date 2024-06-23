@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
-const gmail = require("../config/").gmail;
+const { EMAIL, EMAIL_PASSWORD } = require("../config/");
 //
 ROOT_DIR = path.join(path.resolve(__dirname), "..");
 //
@@ -13,8 +13,8 @@ class MailService {
       secure: true,
       service: "gmail",
       auth: {
-        user: gmail.email,
-        pass: gmail.password,
+        user: EMAIL,
+        pass: EMAIL_PASSWORD,
       },
     });
     this.connect = false;
@@ -23,10 +23,10 @@ class MailService {
     this.transporter.verify((error, _) => {
       if (error) {
         console.log(error.message);
-        console.log(`INFO:   ${error.message}`);
+        console.log(`${error.message}`);
       } else {
         this.connect = true;
-        console.log("INFO:   Mail Service is running");
+        console.log("Mail Service is running");
       }
     });
   }
@@ -85,6 +85,5 @@ class MailService {
   };
 }
 const mailService = new MailService();
-mailService.connection();
 
 module.exports = mailService;
