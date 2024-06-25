@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
+const colors = require("colors");
 const path = require("path");
 const { EMAIL, EMAIL_PASSWORD } = require("../config/");
 //
@@ -26,7 +27,7 @@ class MailService {
         console.log(`${error.message}`);
       } else {
         this.connect = true;
-        console.log("Mail Service is running");
+        console.log(colors.green("INFO:    "), "Connected to Mail Service");
       }
     });
   }

@@ -1,23 +1,23 @@
 const JWT = require("jsonwebtoken");
-const access_key = require("../config").access_key;
-const refresh_key = require("../config").refresh_key;
+const { ACCESS_KEY } = require("../config");
+const { REFRESH_KEY } = require("../config");
 class JWTFactory {
   static generalAccessToken = (payload) => {
-    const AT = JWT.sign(payload, access_key, {
+    const AT = JWT.sign(payload, ACCESS_KEY, {
       algorithm: "HS256",
       expiresIn: "1h",
     });
     return AT;
   };
   static generalRefreshToken = (payload) => {
-    const RT = JWT.sign(payload, refresh_key, {
+    const RT = JWT.sign(payload, REFRESH_KEY, {
       algorithm: "HS256",
       expiresIn: "30d",
     });
     return RT;
   };
   static verifyAccessToken = (token) => {
-    return JWT.verify(token, access_key, (err, payload) => {
+    return JWT.verify(token, ACCESS_KEY, (err, payload) => {
       if (err) {
         console.log("Error: ", err.message);
         return null;
@@ -26,7 +26,7 @@ class JWTFactory {
     });
   };
   static verifyRefreshToken = (token) => {
-    return JWT.verify(token, refresh_key, (err, payload) => {
+    return JWT.verify(token, REFRESH_KEY, (err, payload) => {
       if (err) {
         console.log("Error: ", err.message);
         return null;

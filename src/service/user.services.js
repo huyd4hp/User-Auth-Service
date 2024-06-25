@@ -12,7 +12,6 @@ class UserService {
       const user = await userModel.findById(id).lean();
       return user;
     } catch (err) {
-      console.log(err.message);
       return null;
     }
   };

@@ -45,7 +45,6 @@ class AuthController {
     }
     // 2. Gọi Service kiểm tra thông tin đăng nhập
     const metadata = await AuthService.LogIn(email, password);
-    console.log(`Metadata: ${metadata}`);
     // 3.1. Sai thông tin đăng nhập
     if (!metadata) {
       return res.status(401).json({

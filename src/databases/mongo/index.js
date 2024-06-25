@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const colors = require("colors");
 const {
   MONGO_USERNAME,
   MONGO_PASSWORD,
@@ -13,18 +14,20 @@ class Database {
     this.connect();
   }
   connect() {
-    if (DEBUG) {
-      mongoose.set("debug", true);
-      mongoose.set("debug", { color: true });
-    }
     mongoose
       .connect(connectString, {
         dbName: MONGO_DATABASE,
       })
       .then((_) => {
-        console.log("Connected to MongoDB");
+        console.log(colors.green("INFO:    "), "Connected to MongoDB");
       })
-      .catch((error) => console.log(`Error:  ${error}!`));
+      .catch((error) => {
+        console.log(colors.red("ERROR:    "), `${error}`);
+        setTimeout(() => {
+          console.log(colors.yellow("INFO:    "), "Reconnect to MongoDB");
+          this.connect();
+        }, 30000); //
+      });
   }
   //
   static getInstance() {
