@@ -1,4 +1,4 @@
-const app = require("./src/app");
+const { app } = require("./src/app");
 const colors = require("colors");
 const { APP_PORT } = require("./src/config");
 colors.enable();
