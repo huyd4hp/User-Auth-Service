@@ -11,13 +11,19 @@ router.use("/user", login_required, require("./user/"));
 router.get("/avatar/:objectName", async (req, res, next) => {
   const objectName = req.params.objectName;
   const CLIENT_ID = objectName.split(".")[0];
-  const user = await UserService.FindUserById(CLIENT_ID);
-  if (!user && CLIENT_ID !== "default") {
-    return res.status(404).send("User Not Found");
+  if (CLIENT_ID === "default") {
+    const { imageData, contentType } = await minio.getDefaultAvatar();
+    res.setHeader("Content-Type", contentType);
+    imageData.pipe(res);
+  } else {
+    const user = await UserService.FindUserById(CLIENT_ID);
+    if (!user) {
+      return res.status(404).send("User Not Found");
+    }
+    const { imageData, contentType } = await minio.getImageByUser(user);
+    res.setHeader("Content-Type", contentType);
+    imageData.pipe(res);
   }
-  const { imageData, contentType } = await minio.getImageByUser(user);
-  res.setHeader("Content-Type", contentType);
-  imageData.pipe(res);
 });
 // Router
 module.exports = router;

@@ -3,7 +3,8 @@ const handler = require("../../../helper/handlerRouter");
 const UserController = require("../../../controller/user.controller");
 const multer = require("multer");
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const fileFilter = require("../../../helper/fileFilter");
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 // Router
 router.get("/profile", handler(UserController.GetProfile));
 router.delete("/profile", handler(UserController.DeleteAccount));

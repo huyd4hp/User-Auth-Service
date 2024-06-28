@@ -1,6 +1,7 @@
 const Minio = require("minio");
 const axios = require("axios");
 const UserService = require("../service/user.services");
+const { MINIO_ACCESS_KEY, MINIO_SECRET_KEY } = require("../config");
 class MinIO {
   constructor(
     accessKey,
@@ -44,32 +45,32 @@ class MinIO {
     );
   };
   getImageByUser = async (user) => {
-    try {
-      const avatar = user.avatar.split("/avatar/")[1];
-      const imageData = await this.minioClient.getObject("avatars", avatar);
-      const contentType = "image/png";
-      return { imageData, contentType };
-    } catch (err) {
-      const imageData = await this.minioClient.getObject(
-        "avatars",
-        "default.png"
-      );
-      const contentType = "image/png";
-      return { imageData, contentType };
+    const avatar = user.avatar.split("/avatar/")[1];
+    let contentType = "image/jpeg";
+    const fileType = avatar.split(".")[1];
+    console.log(fileType);
+    const imageData = await this.minioClient.getObject("avatars", avatar);
+    if (fileType == "png") {
+      contentType = "image/png";
     }
+    return { imageData, contentType };
+  };
+  getDefaultAvatar = async () => {
+    const imageData = await this.minioClient.getObject(
+      "avatars",
+      "default.png"
+    );
+    const contentType = "image/png";
+    return { imageData, contentType };
   };
 }
 // Initialize
-const minio = new MinIO(
-  "LyQq5hhiQbpAK1rJ7Gk3",
-  `tmOZz0Rh4a0bGNmAgAwLjX4MEuxBxbi2pC6CqdMf`,
-  {
-    endPoint: "localhost",
-    port: 9000,
-    useSSL: false,
-    buckets: ["avatars"],
-  }
-);
+const minio = new MinIO(MINIO_ACCESS_KEY, MINIO_SECRET_KEY, {
+  endPoint: "localhost",
+  port: 9000,
+  useSSL: false,
+  buckets: ["avatars"],
+});
 minio.uploadNetworkImage(
   "https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1",
   "avatars",

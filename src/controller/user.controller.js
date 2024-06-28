@@ -110,7 +110,14 @@ class UserController {
     const CLIENT_ID = req.headers["CLIENT_ID"];
     const data = req.body;
 
-    const disallowedFields = ["password", "role", "_id", "__v", "email"];
+    const disallowedFields = [
+      "password",
+      "role",
+      "_id",
+      "__v",
+      "email",
+      "avatar",
+    ];
     disallowedFields.forEach((field) => {
       if (data.hasOwnProperty(field)) {
         delete data[field];
