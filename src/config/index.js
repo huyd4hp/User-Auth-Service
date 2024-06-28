@@ -12,10 +12,11 @@ MONGO_DATABASE = process.env.MONGO_DATABASE;
 REDIS_HOST = process.env.REDIS_HOST || "localhost";
 REDIS_PORT = +process.env.REDIS_PORT || 6379;
 KAFKA_HOST = process.env.KAFKA_HOST;
-KAFKA_PORT = process.env.KAFKA_PORT;
+KAFKA_PORT = process.env.KAFKA_PORT || 9092;
 ACCESS_KEY = process.env.ACCESS_KEY;
 REFRESH_KEY = process.env.REFRESH_KEY;
-
+MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
+MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
 module.exports = {
   APP_PORT,
   DEBUG,
@@ -32,4 +33,6 @@ module.exports = {
   REFRESH_KEY,
   KAFKA_HOST,
   KAFKA_PORT,
+  MINIO_ACCESS_KEY,
+  MINIO_SECRET_KEY,
 };

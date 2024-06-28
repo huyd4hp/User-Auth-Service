@@ -19,8 +19,7 @@ class JWTFactory {
   static verifyAccessToken = (token) => {
     return JWT.verify(token, ACCESS_KEY, (err, payload) => {
       if (err) {
-        console.log("Error: ", err.message);
-        return null;
+        return err.message;
       }
       return payload._id;
     });
@@ -28,8 +27,7 @@ class JWTFactory {
   static verifyRefreshToken = (token) => {
     return JWT.verify(token, REFRESH_KEY, (err, payload) => {
       if (err) {
-        console.log("Error: ", err.message);
-        return null;
+        return err.message;
       }
       return payload._id;
     });

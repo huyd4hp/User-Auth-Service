@@ -1,5 +1,6 @@
 const UserService = require("../service/user.services");
 const producer = require("../helper/kafka_producer");
+const minio = require("../helper/minio");
 class UserController {
   static AddUser = async (req, res, next) => {
     const { email, password } = req.body;
@@ -108,22 +109,13 @@ class UserController {
   static UpdateProfile = async (req, res, next) => {
     const CLIENT_ID = req.headers["CLIENT_ID"];
     const data = req.body;
-    // Không cho phép sửa password ở đây
-    if (data.hasOwnProperty("password")) {
-      delete data.password;
-    }
-    if (data.hasOwnProperty("role")) {
-      delete data.role;
-    }
-    if (data.hasOwnProperty("_id")) {
-      delete data._id;
-    }
-    if (data.hasOwnProperty("__v")) {
-      delete data.__v;
-    }
-    if (data.hasOwnProperty("email")) {
-      delete data.email;
-    }
+
+    const disallowedFields = ["password", "role", "_id", "__v", "email"];
+    disallowedFields.forEach((field) => {
+      if (data.hasOwnProperty(field)) {
+        delete data[field];
+      }
+    });
 
     const newProfile = await UserService.UpdateProfile(CLIENT_ID, data);
     producer.sendMessage("update_profile", [
@@ -163,6 +155,16 @@ class UserController {
     return res
       .status(200)
       .json({ status: "success", message: "Password updated successfully" });
+  };
+  static UploadAvatar = async (req, res, next) => {
+    if (!req.file) {
+      return res.status(400).send("Failed");
+    }
+    const action = await minio.uploadAvatar(req.file, req.headers.CLIENT_ID);
+    if (!action) {
+      return res.status(500).send("Failed to upload avatar");
+    }
+    return res.status(200).send("Upload avatar successfully");
   };
 }
 module.exports = UserController;
