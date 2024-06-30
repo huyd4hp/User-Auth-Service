@@ -1,7 +1,0 @@
-.gitattributes
-.gitignore
-database.yaml
-fake_user.py
-README.md
-/database
-/node_modules

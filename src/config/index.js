@@ -1,6 +1,4 @@
-require("dotenv").config({
-  path: __dirname + "/.env",
-});
+require("dotenv").config();
 
 APP_PORT = process.env.APP_PORT || 5001;
 DEBUG = process.env.MODE === "DEBUG";
