@@ -8,6 +8,15 @@ const MorganCustom = require("./helper/morgan");
 const router = require("./router");
 // App
 const app = express();
+// CORS
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 // Middleware
 app.use(MorganCustom);
 app.use(helmet());
