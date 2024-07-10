@@ -1,7 +1,12 @@
 const Minio = require("minio");
 const axios = require("axios");
 const UserService = require("../service/user.services");
-const { MINIO_ACCESS_KEY, MINIO_SECRET_KEY } = require("../config");
+const {
+  APP_PORT,
+  MINIO_ACCESS_KEY,
+  MINIO_SECRET_KEY,
+  MINIO_HOST,
+} = require("../config");
 class MinIO {
   constructor(
     accessKey,
@@ -25,7 +30,7 @@ class MinIO {
     const fileExtension = image.originalname.split(".").pop();
     const fileName = `${CLIENT_ID}.${fileExtension}`;
     await this.minioClient.putObject("avatars", fileName, image.buffer);
-    const avatarURL = `http://localhost:5000/api/v1/avatar/${fileName}`;
+    const avatarURL = `http://localhost:${APP_PORT}/api/v1/avatar/${fileName}`;
     UserService.UpdateProfile(CLIENT_ID, {
       avatar: avatarURL,
     });
@@ -66,8 +71,7 @@ class MinIO {
 }
 // Initialize
 const minio = new MinIO(MINIO_ACCESS_KEY, MINIO_SECRET_KEY, {
-  endPoint: "localhost",
-  port: 9000,
+  endPoint: MINIO_HOST,
   useSSL: false,
   buckets: ["avatars"],
 });

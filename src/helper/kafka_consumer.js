@@ -1,6 +1,5 @@
 const { Kafka } = require("kafkajs");
 const { KAFKA_HOST, KAFKA_PORT } = require("../config");
-
 class KafkaConsumer {
   constructor({ clientId, brokers, groupId, topic }) {
     this.kafka = new Kafka({

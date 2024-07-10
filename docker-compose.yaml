@@ -1,37 +1,51 @@
 services:
-  mongo:
+  mongo-master:
     image: mongo:latest
-    container_name: UserDB
+    container_name: UserDB-Master
     restart: always
+    hostname: ${MONGO_HOST_MASTER}
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
     volumes:
-      - ./database/mongodb/:/data/db
+      - ./database/mongodb/master:/data/db
     ports:
-      - "${MONGO_PORT}:27017"
+      - "${MONGO_PORT_MASTER}:27017"
+    networks:
+      - AuthNetwork
   redis-stack:
     image: redis/redis-stack:latest
     container_name: RedisSession
     restart: always
+    hostname: ${REDIS_HOST}
     volumes:
       - ./database/redis-stack/:/data
       - ./database/redis-stack/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
       - "${REDIS_PORT}:6379"
       - "${REDIS_INSIGHT_PORT}:8001"
+    networks:
+      - AuthNetwork
     command: ["redis-server", "--protected-mode", "no"]
   minio:
     image: minio/minio
-    container_name: minio
+    container_name: Minio-UserAvatar
     restart: always
+    hostname: ${MINIO_HOST}
     ports:
       - "9000:9000"
       - "9001:9001"
     volumes:
       - ./minio:/data
     environment:
-      MINIO_ROOT_USER: root
-      MINIO_ROOT_PASSWORD: rootMINIO
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    networks:
+      - AuthNetwork
     command: server --console-address ":9001" /data
+
+networks:
+  AuthNetwork:
+    external: true
+    driver: bridge

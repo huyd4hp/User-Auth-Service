@@ -4,17 +4,18 @@ APP_PORT = process.env.APP_PORT || 5001;
 DEBUG = process.env.MODE === "DEBUG";
 EMAIL = process.env.EMAIL;
 EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
-MONGO_HOST = process.env.MONGO_HOST || "localhost";
-MONGO_PORT = process.env.MONGO_PORT || 27017;
+MONGO_HOST = process.env.MONGO_HOST_MASTER || "localhost";
+MONGO_PORT = process.env.MONGO_PORT_MASTER || 27017;
 MONGO_USERNAME = process.env.MONGO_USERNAME;
 MONGO_PASSWORD = process.env.MONGO_PASSWORD;
 MONGO_DATABASE = process.env.MONGO_DATABASE;
 REDIS_HOST = process.env.REDIS_HOST || "localhost";
 REDIS_PORT = +process.env.REDIS_PORT || 6379;
-KAFKA_HOST = process.env.KAFKA_HOST;
+KAFKA_HOST = process.env.KAFKA_HOST || "localhost";
 KAFKA_PORT = process.env.KAFKA_PORT || 9092;
 ACCESS_KEY = process.env.ACCESS_KEY;
 REFRESH_KEY = process.env.REFRESH_KEY;
+MINIO_HOST = process.env.MINIO_HOST || "localhost";
 MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
 MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
 module.exports = {
@@ -33,6 +34,7 @@ module.exports = {
   REFRESH_KEY,
   KAFKA_HOST,
   KAFKA_PORT,
+  MINIO_HOST,
   MINIO_ACCESS_KEY,
   MINIO_SECRET_KEY,
 };

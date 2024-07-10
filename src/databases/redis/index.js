@@ -1,7 +1,6 @@
 const redis = require("redis");
 const colors = require("colors");
 const { REDIS_HOST, REDIS_PORT } = require("../../config");
-
 let statusConnect = {
   CONNECT: "connect",
   END: "end",

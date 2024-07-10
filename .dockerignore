@@ -1,0 +1,6 @@
+node_modules
+database
+minio
+.gitattributes
+.gitignore
+README.md

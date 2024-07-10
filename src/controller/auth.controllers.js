@@ -118,6 +118,10 @@ class AuthController {
         message: "Email not found",
       });
     }
+    1 // user cung cap email
+    2 // server gửi otp về email xác thực
+    3 // nhập otp xác thực -> server random password
+    4 // user đọc email vào account rồi đổi lại mật khẩu
     if (action === 1) {
       return res.status(429).json({
         status: "error",
