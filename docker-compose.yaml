@@ -14,6 +14,7 @@ services:
       - "${MONGO_PORT_MASTER}:27017"
     networks:
       - AuthNetwork
+
   redis-stack:
     image: redis/redis-stack:latest
     container_name: RedisSession
@@ -27,6 +28,7 @@ services:
     networks:
       - AuthNetwork
     command: ["redis-server", "--protected-mode", "no"]
+
   minio:
     image: minio/minio
     container_name: Minio-UserAvatar
@@ -43,64 +45,6 @@ services:
     networks:
       - AuthNetwork
     command: server --console-address ":9001" /data
-  AuthService:
-    image: auth-service
-    container_name: AuthService
-    hostname: ${APP_HOST}
-    restart: always
-    ports:
-      - "5000:${APP_PORT}"
-    environment:
-      APP_PORT: ${APP_PORT}
-      APP_HOST: ${APP_HOST}
-      EMAIL: ${EMAIL}
-      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
-      MONGO_HOST_MASTER: ${MONGO_HOST_MASTER}
-      MONGO_USERNAME: ${MONGO_USERNAME}
-      MONGO_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_DATABASE: ${MONGO_DATABASE}
-      ACCESS_KEY: ${ACCESS_KEY}
-      REFRESH_KEY: ${REFRESH_KEY}
-      KAFKA_HOST: ${KAFKA_HOST}
-      REDIS_HOST: ${REDIS_HOST}
-      MINIO_HOST: ${MINIO_HOST}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    networks:
-      - AuthNetwork
-    depends_on:
-      - mongo-master
-      - minio
-      - redis-stack
-  Sub-AuthService:
-    image: auth-service
-    container_name: SubAuthService
-    hostname: ${SUB_APP_HOST}
-    restart: always
-    ports:
-      - "5010:${SUB_APP_PORT}"
-    environment:
-      APP_PORT: ${SUB_APP_PORT}
-      APP_HOST: ${SUB_APP_HOST}
-      EMAIL: ${EMAIL}
-      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
-      MONGO_HOST_MASTER: ${MONGO_HOST_MASTER}
-      MONGO_USERNAME: ${MONGO_USERNAME}
-      MONGO_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_DATABASE: ${MONGO_DATABASE}
-      ACCESS_KEY: ${ACCESS_KEY}
-      REFRESH_KEY: ${REFRESH_KEY}
-      KAFKA_HOST: ${KAFKA_HOST}
-      REDIS_HOST: ${REDIS_HOST}
-      MINIO_HOST: ${MINIO_HOST}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    networks:
-      - AuthNetwork
-    depends_on:
-      - mongo-master
-      - minio
-      - redis-stack
 
 networks:
   AuthNetwork:

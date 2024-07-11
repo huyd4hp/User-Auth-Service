@@ -1,0 +1,65 @@
+services:
+  AuthService:
+    image: auth-service
+    container_name: AuthService
+    hostname: ${APP_HOST}
+    restart: always
+    environment:
+      APP_PORT: ${APP_PORT}
+      APP_HOST: ${APP_HOST}
+      EMAIL: ${EMAIL}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      MONGO_HOST_MASTER: ${MONGO_HOST_MASTER}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      ACCESS_KEY: ${ACCESS_KEY}
+      REFRESH_KEY: ${REFRESH_KEY}
+      KAFKA_HOST: ${KAFKA_HOST}
+      REDIS_HOST: ${REDIS_HOST}
+      MINIO_HOST: ${MINIO_HOST}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    networks:
+      - AuthNetwork
+
+  Sub-AuthService:
+    image: auth-service
+    container_name: SubAuthService
+    hostname: ${SUB_APP_HOST}
+    restart: always
+    environment:
+      APP_PORT: ${SUB_APP_PORT}
+      APP_HOST: ${SUB_APP_HOST}
+      EMAIL: ${EMAIL}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      MONGO_HOST_MASTER: ${MONGO_HOST_MASTER}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      ACCESS_KEY: ${ACCESS_KEY}
+      REFRESH_KEY: ${REFRESH_KEY}
+      KAFKA_HOST: ${KAFKA_HOST}
+      REDIS_HOST: ${REDIS_HOST}
+      MINIO_HOST: ${MINIO_HOST}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    networks:
+      - AuthNetwork
+  nginx:
+    image: nginx
+    container_name: LoadBalanceAuthService
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "5000:80"
+    networks:
+      - AuthNetwork
+    depends_on:
+      - AuthService
+      - Sub-AuthService
+
+networks:
+  AuthNetwork:
+    external: true
+    driver: bridge
