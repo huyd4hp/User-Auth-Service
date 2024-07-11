@@ -10,6 +10,7 @@ class UserService {
   static FindUserById = async (id) => {
     try {
       const user = await userModel.findById(id).lean();
+      
       return user;
     } catch (err) {
       return null;

@@ -21,7 +21,6 @@ services:
     hostname: ${REDIS_HOST}
     volumes:
       - ./database/redis-stack/:/data
-      - ./database/redis-stack/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
       - "${REDIS_PORT}:6379"
       - "${REDIS_INSIGHT_PORT}:8001"
@@ -44,6 +43,35 @@ services:
     networks:
       - AuthNetwork
     command: server --console-address ":9001" /data
+  AuthService:
+    image: auth-service
+    container_name: AuthService
+    hostname: ${APP_HOST}
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      APP_PORT: ${APP_PORT}
+      APP_HOST: ${APP_HOST}
+      EMAIL: ${EMAIL}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      MONGO_HOST_MASTER: ${MONGO_HOST_MASTER}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      ACCESS_KEY: ${ACCESS_KEY}
+      REFRESH_KEY: ${REFRESH_KEY}
+      KAFKA_HOST: ${KAFKA_HOST}
+      REDIS_HOST: ${REDIS_HOST}
+      MINIO_HOST: ${MINIO_HOST}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    networks:
+      - AuthNetwork
+    depends_on:
+      - mongo-master
+      - minio
+      - redis-stack
 
 networks:
   AuthNetwork:

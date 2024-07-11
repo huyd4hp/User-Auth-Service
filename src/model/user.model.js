@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 const DOCUMENT_NAME = "user";
 const COLLECTION_NAME = "users";
-
+const { APP_PORT } = require("../config");
 const RoleEnum = {
   USER: "User",
   EVENT_ADMIN: "EventAdmin",
@@ -11,7 +11,7 @@ const RoleEnum = {
 var userSchema = new mongoose.Schema({
   avatar: {
     type: String,
-    default: "http://localhost:5000/api/v1/avatar/default.png",
+    default: "default.png",
   },
   email: {
     type: String,

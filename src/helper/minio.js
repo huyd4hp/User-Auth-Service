@@ -30,7 +30,7 @@ class MinIO {
     const fileExtension = image.originalname.split(".").pop();
     const fileName = `${CLIENT_ID}.${fileExtension}`;
     await this.minioClient.putObject("avatars", fileName, image.buffer);
-    const avatarURL = `http://localhost:${APP_PORT}/api/v1/avatar/${fileName}`;
+    const avatarURL = `${fileName}`;
     UserService.UpdateProfile(CLIENT_ID, {
       avatar: avatarURL,
     });
@@ -50,7 +50,7 @@ class MinIO {
     );
   };
   getImageByUser = async (user) => {
-    const avatar = user.avatar.split("/avatar/")[1];
+    const avatar = user.avatar;
     let contentType = "image/jpeg";
     const fileType = avatar.split(".")[1];
     console.log(fileType);

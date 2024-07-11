@@ -7,7 +7,6 @@ const {
   MONGO_PORT,
   MONGO_DATABASE,
 } = require("../../config");
-const { DEBUG } = require("../../config");
 const connectString = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}`;
 class Database {
   constructor() {
@@ -26,7 +25,7 @@ class Database {
         setTimeout(() => {
           console.log(colors.yellow("INFO:    "), "Reconnect to MongoDB");
           this.connect();
-        }, 30000); //
+        }, 5); //
       });
   }
   //

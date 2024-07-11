@@ -1,6 +1,7 @@
 const UserService = require("../service/user.services");
 const producer = require("../helper/kafka_producer");
 const minio = require("../helper/minio");
+const { responseUser } = require("../helper/getData");
 class UserController {
   static AddUser = async (req, res, next) => {
     const { email, password } = req.body;
@@ -92,7 +93,9 @@ class UserController {
   static GetProfile = async (req, res, next) => {
     const CLIENT_ID = req.headers["CLIENT_ID"];
     const user = await UserService.FindUserById(CLIENT_ID);
-    return res.status(200).json({ status: "success", data: user });
+    return res
+      .status(200)
+      .json({ status: "success", data: responseUser(user) });
   };
   static DeleteAccount = async (req, res, next) => {
     const CLIENT_ID = req.headers["CLIENT_ID"];
