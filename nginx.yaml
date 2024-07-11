@@ -5,6 +5,7 @@ services:
     hostname: ${APP_HOST}
     restart: always
     environment:
+      EXPOSE_PORT: ${EXPOSE_PORT}
       APP_PORT: ${APP_PORT}
       APP_HOST: ${APP_HOST}
       EMAIL: ${EMAIL}
@@ -29,6 +30,7 @@ services:
     hostname: ${SUB_APP_HOST}
     restart: always
     environment:
+      EXPOSE_PORT: ${EXPOSE_PORT}
       APP_PORT: ${SUB_APP_PORT}
       APP_HOST: ${SUB_APP_HOST}
       EMAIL: ${EMAIL}
@@ -52,7 +54,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "5000:80"
+      - "${EXPOSE_PORT}:80"
     networks:
       - AuthNetwork
     depends_on:

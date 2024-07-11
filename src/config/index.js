@@ -1,5 +1,8 @@
 APP_PORT = process.env.APP_PORT;
 APP_HOST = process.env.APP_HOST;
+EXPOSE_DOMAIN = process.env.EXPOSE_DOMAIN;
+EXPOSE_HOST = process.env.EXPOSE_HOST || "127.0.0.1";
+EXPOSE_PORT = process.env.EXPOSE_PORT;
 EMAIL = process.env.EMAIL;
 EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 MONGO_HOST = process.env.MONGO_HOST_MASTER;
@@ -17,8 +20,11 @@ MINIO_HOST = process.env.MINIO_HOST || 9000;
 MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
 MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
 module.exports = {
+  EXPOSE_DOMAIN,
   APP_PORT,
   APP_HOST,
+  EXPOSE_HOST,
+  EXPOSE_PORT,
   EMAIL,
   EMAIL_PASSWORD,
   MONGO_HOST,

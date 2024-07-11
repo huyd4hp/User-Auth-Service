@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const { APP_HOST } = require("../config");
+const { EXPOSE_HOST, EXPOSE_PORT, EXPOSE_DOMAIN } = require("../config");
 
 const getData = ({ object, fields }) => {
   return _.pick(object, fields);
@@ -18,7 +18,11 @@ const responseUser = (user) => {
     "last_name",
     "address",
   ]);
-  pickedUser.avatar = `https://${APP_HOST}/api/v1/avatar/${pickedUser.avatar}`;
+  if (EXPOSE_DOMAIN) {
+    pickedUser.avatar = `http://${EXPOSE_DOMAIN}/api/v1/avatar/${pickedUser.avatar}`;
+  } else {
+    pickedUser.avatar = `http://${EXPOSE_HOST}:${EXPOSE_PORT}/api/v1/avatar/${pickedUser.avatar}`;
+  }
 
   return pickedUser;
 };
