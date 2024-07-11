@@ -10,8 +10,6 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
     volumes:
       - ./database/mongodb/master:/data/db
-    ports:
-      - "${MONGO_PORT_MASTER}:27017"
     networks:
       - AuthNetwork
 
@@ -22,9 +20,6 @@ services:
     hostname: ${REDIS_HOST}
     volumes:
       - ./database/redis-stack/:/data
-    ports:
-      - "${REDIS_PORT}:6379"
-      - "${REDIS_INSIGHT_PORT}:8001"
     networks:
       - AuthNetwork
     command: ["redis-server", "--protected-mode", "no"]
@@ -34,9 +29,6 @@ services:
     container_name: Minio-UserAvatar
     restart: always
     hostname: ${MINIO_HOST}
-    ports:
-      - "9000:9000"
-      - "9001:9001"
     volumes:
       - ./minio:/data
     environment:
