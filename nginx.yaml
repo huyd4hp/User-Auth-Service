@@ -23,6 +23,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     networks:
       - AuthNetwork
+      - KafkaNetwork
 
   Sub-AuthService:
     image: auth-service
@@ -48,6 +49,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     networks:
       - AuthNetwork
+      - KafkaNetwork
   nginx:
     image: nginx
     container_name: LoadBalanceAuthService
@@ -58,11 +60,15 @@ services:
       - "${EXPOSE_PORT}:80"
     networks:
       - AuthNetwork
+      - KafkaNetwork
     depends_on:
       - AuthService
       - Sub-AuthService
 
 networks:
   AuthNetwork:
+    external: true
+    driver: bridge
+  KafkaNetwork:
     external: true
     driver: bridge
