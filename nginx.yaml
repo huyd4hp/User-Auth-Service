@@ -50,6 +50,32 @@ services:
     networks:
       - AuthNetwork
       - KafkaNetwork
+
+  BackUp-AuthService:
+    image: auth-service
+    container_name: BackUpAuthService
+    hostname: ${BackUp_APP_HOST}
+    restart: always
+    environment:
+      EXPOSE_PORT: ${EXPOSE_PORT}
+      APP_PORT: ${BackUp_APP_PORT}
+      APP_HOST: ${BackUp_APP_HOST}
+      EMAIL: ${EMAIL}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      MONGO_HOST_MASTER: ${MONGO_HOST_MASTER}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      ACCESS_KEY: ${ACCESS_KEY}
+      REFRESH_KEY: ${REFRESH_KEY}
+      KAFKA_HOST: ${KAFKA_HOST}
+      REDIS_HOST: ${REDIS_HOST}
+      MINIO_HOST: ${MINIO_HOST}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    networks:
+      - AuthNetwork
+      - KafkaNetwork
   nginx:
     image: nginx
     container_name: LoadBalanceAuthService

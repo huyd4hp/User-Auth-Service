@@ -24,7 +24,6 @@ class KafkaProducer {
     });
   }
 }
-console.log(`${KAFKA_HOST}:${KAFKA_PORT}`);
 const producer = new KafkaProducer({
   clientId: "auth-service",
   brokers: [`${KAFKA_HOST}:${KAFKA_PORT}`],
