@@ -51,6 +51,7 @@ services:
   nginx:
     image: nginx
     container_name: LoadBalanceAuthService
+    restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
