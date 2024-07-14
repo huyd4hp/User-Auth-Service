@@ -131,7 +131,9 @@ class UserController {
     producer.sendMessage("update_profile", [
       { key: CLIENT_ID, value: JSON.stringify(req.body) },
     ]);
-    return res.status(200).json({ status: "success", data: newProfile });
+    return res
+      .status(200)
+      .json({ status: "success", data: responseUser(newProfile) });
   };
   static UpdatePassword = async (req, res, next) => {
     const CLIENT_ID = req.headers["CLIENT_ID"];
