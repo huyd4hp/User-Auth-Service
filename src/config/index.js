@@ -1,3 +1,4 @@
+APP_NAME = process.env.APP_NAME;
 APP_PORT = process.env.APP_PORT;
 APP_HOST = process.env.APP_HOST;
 EXPOSE_DOMAIN = process.env.EXPOSE_DOMAIN;
@@ -19,8 +20,11 @@ REFRESH_KEY = process.env.REFRESH_KEY;
 MINIO_HOST = process.env.MINIO_HOST || 9000;
 MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
 MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
+CONSUL_HOST = process.env.CONSUL_HOST;
 module.exports = {
+  CONSUL_HOST,
   EXPOSE_DOMAIN,
+  APP_NAME,
   APP_PORT,
   APP_HOST,
   EXPOSE_HOST,

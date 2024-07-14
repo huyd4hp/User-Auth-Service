@@ -6,6 +6,7 @@ services:
     restart: always
     environment:
       EXPOSE_PORT: ${EXPOSE_PORT}
+      APP_NAME: ${APP_NAME}
       APP_PORT: ${APP_PORT}
       APP_HOST: ${APP_HOST}
       EMAIL: ${EMAIL}
@@ -21,9 +22,11 @@ services:
       MINIO_HOST: ${MINIO_HOST}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      CONSUL_HOST: ${CONSUL_HOST}
     networks:
       - AuthNetwork
       - KafkaNetwork
+      - ConSulNetwork
 
   Sub-AuthService:
     image: auth-service
@@ -32,6 +35,7 @@ services:
     restart: always
     environment:
       EXPOSE_PORT: ${EXPOSE_PORT}
+      APP_NAME: ${SUB_APP_NAME}
       APP_PORT: ${SUB_APP_PORT}
       APP_HOST: ${SUB_APP_HOST}
       EMAIL: ${EMAIL}
@@ -47,9 +51,11 @@ services:
       MINIO_HOST: ${MINIO_HOST}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      CONSUL_HOST: ${CONSUL_HOST}
     networks:
       - AuthNetwork
       - KafkaNetwork
+      - ConSulNetwork
 
   BackUp-AuthService:
     image: auth-service
@@ -58,6 +64,7 @@ services:
     restart: always
     environment:
       EXPOSE_PORT: ${EXPOSE_PORT}
+      APP_NAME: ${BackUp_APP_NAME}
       APP_PORT: ${BackUp_APP_PORT}
       APP_HOST: ${BackUp_APP_HOST}
       EMAIL: ${EMAIL}
@@ -73,12 +80,15 @@ services:
       MINIO_HOST: ${MINIO_HOST}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      CONSUL_HOST: ${CONSUL_HOST}
     networks:
       - AuthNetwork
       - KafkaNetwork
+      - ConSulNetwork
   nginx:
     image: nginx
     container_name: LoadBalanceAuthService
+    hostname: nginx
     restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -86,15 +96,18 @@ services:
       - "${EXPOSE_PORT}:80"
     networks:
       - AuthNetwork
-      - KafkaNetwork
     depends_on:
       - AuthService
       - Sub-AuthService
+      - BackUp-AuthService
 
 networks:
   AuthNetwork:
     external: true
     driver: bridge
   KafkaNetwork:
+    external: true
+    driver: bridge
+  ConSulNetwork:
     external: true
     driver: bridge

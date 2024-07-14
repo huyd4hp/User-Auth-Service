@@ -1,8 +1,32 @@
 const { app } = require("./src/app");
 const colors = require("colors");
-const { APP_PORT } = require("./src/config");
+const ConsulClient = require("./src/helper/consul");
+const { APP_PORT, APP_HOST, APP_NAME } = require("./src/config");
 colors.enable();
 const server = app.listen(APP_PORT, () => {
+  const service = {
+    id: "AuthService",
+    name: "AuthService",
+    address: "api.eventhub",
+    port: 80,
+    tags: ["NodeJS", "AuthService"],
+  };
+
+  // Register the service with Consul
+  ConsulClient.registerService(service);
+
+  // Define a new check for the service
+  const check = {
+    serviceId: "AuthService",
+    name: `${APP_NAME} endpoint check`,
+    http: `http://${APP_HOST}:${APP_PORT}/api/v1/health`,
+    interval: "30s", // Interval between checks
+    timeout: "2s", // Timeout for the check
+  };
+
+  // Add the check to Consul
+  ConsulClient.addCheck(check);
+
   console.log(
     colors.green("INFO:    "),
     `Application listening on ${APP_PORT}`
