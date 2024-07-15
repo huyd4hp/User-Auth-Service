@@ -17,8 +17,6 @@ services:
     container_name: AuthDB-Slave-1
     restart: always
     hostname: ${MONGO_HOST_SLAVE_1}
-    ports:
-      - "8001:27017"
     volumes:
       - ./database/mongodb/slave-1:/data/db
     command: mongod --replSet rs0 --bind_ip_all
@@ -30,8 +28,6 @@ services:
     container_name: AuthDB-Slave-2
     restart: always
     hostname: ${MONGO_HOST_SLAVE_2}
-    ports:
-      - "8002:27017"
     volumes:
       - ./database/mongodb/slave-2:/data/db
     command: mongod --replSet rs0 --bind_ip_all
