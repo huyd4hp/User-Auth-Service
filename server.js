@@ -18,10 +18,10 @@ const server = app.listen(APP_PORT, () => {
   // Define a new check for the service
   const check = {
     serviceId: "AuthService",
-    name: `${APP_NAME} endpoint check`,
+    name: `${APP_NAME} Health Check`,
     http: `http://${APP_HOST}:${APP_PORT}/api/v1/health`,
-    interval: "30s", // Interval between checks
-    timeout: "2s", // Timeout for the check
+    interval: "30s",
+    timeout: "3s",
   };
 
   // Add the check to Consul

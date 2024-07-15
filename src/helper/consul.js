@@ -1,5 +1,5 @@
 const consul = require("consul");
-
+const { CONSUL_HOST } = require("../config");
 class Consul {
   constructor(options) {
     this.client = new consul(options);
@@ -20,7 +20,7 @@ class Consul {
 }
 
 const ConsulClient = new Consul({
-  host: "consul",
+  host: CONSUL_HOST,
   port: "8500",
 });
 

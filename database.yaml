@@ -1,31 +1,55 @@
 services:
-  mongo-master:
-    image: mongo:latest
-    container_name: UserDB-Master
+  mongo-primary:
+    image: mongo:5
+    container_name: AuthDB-Master
     restart: always
-    hostname: ${MONGO_HOST_MASTER}
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+    hostname: ${MONGO_HOST_PRIMARY}
+    ports:
+      - "8000:27017"
     volumes:
       - ./database/mongodb/master:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - AuthNetwork
+
+  mongo-slave-1:
+    image: mongo:5
+    container_name: AuthDB-Slave-1
+    restart: always
+    hostname: ${MONGO_HOST_SLAVE_1}
+    ports:
+      - "8001:27017"
+    volumes:
+      - ./database/mongodb/slave-1:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - AuthNetwork
+
+  mongo-slave-2:
+    image: mongo:5
+    container_name: AuthDB-Slave-2
+    restart: always
+    hostname: ${MONGO_HOST_SLAVE_2}
+    ports:
+      - "8002:27017"
+    volumes:
+      - ./database/mongodb/slave-2:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
     networks:
       - AuthNetwork
 
   redis-stack:
-    image: redis/redis-stack:latest
+    image: redis
     container_name: RedisSession
     restart: always
     hostname: ${REDIS_HOST}
     volumes:
-      - ./database/redis-stack/:/data
+      - ./database/redis-stack:/data
     networks:
       - AuthNetwork
-    command: ["redis-server", "--protected-mode", "no"]
 
   minio:
-    image: minio/minio
+    image: minio/minio:latest
     container_name: Minio-UserAvatar
     restart: always
     hostname: ${MINIO_HOST}
