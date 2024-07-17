@@ -34,13 +34,15 @@ services:
     networks:
       - AuthNetwork
 
-  redis-stack:
-    image: redis
+  redis-session:
+    image: redis:7.2.5
     container_name: RedisSession
     restart: always
-    hostname: ${REDIS_HOST}
+    hostname: ${REDIS_SESSION_HOST}
     volumes:
       - ./database/redis-stack:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     networks:
       - AuthNetwork
 

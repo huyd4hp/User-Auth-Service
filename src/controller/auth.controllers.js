@@ -1,6 +1,6 @@
 const AuthService = require("../service/auth.services");
 const { responseUser } = require("../helper/getData");
-
+const clientRedis = require("../databases/redis/session");
 class AuthController {
   static SignUp = async (req, res, next) => {
     // 1. Kiểm tra thông tin đăng kí
@@ -60,6 +60,11 @@ class AuthController {
       });
     }
     // 3.3 Đăng nhập hợp lệ
+    // 3.3.1 Thêm RefreshToken vào Redis (Tạo Session cho User)
+    await clientRedis.set(
+      metadata.user._id.toString(),
+      metadata.refresh_token.toString()
+    );
     return res.status(200).json({
       status: "success",
       metadata: metadata,
@@ -71,7 +76,7 @@ class AuthController {
     if (!refresh_token) {
       return res
         .status(400)
-        .json({ status: "error", message: "token is required" });
+        .json({ status: "error", message: "Missing Token Error" });
     }
     // 2. Gọi Service để thực hiện đăng xuất
     const action = await AuthService.LogOut(refresh_token);
@@ -82,7 +87,7 @@ class AuthController {
     }
     return res.status(401).json({
       status: "error",
-      message: "Invalid token",
+      message: "Invalid Token Error",
     });
   };
   static RefreshToken = async (req, res, next) => {
@@ -90,13 +95,13 @@ class AuthController {
     if (!refresh_token) {
       return res
         .status(400)
-        .json({ status: "error", message: "token is required" });
+        .json({ status: "error", message: "Missing Token Error" });
     }
     const newToken = await AuthService.RefreshToken(refresh_token);
     if (!newToken) {
       return res.status(401).json({
         status: "error",
-        message: "Invalid token",
+        message: "Invalid Token Error",
       });
     }
     return res.status(200).json({
@@ -109,7 +114,7 @@ class AuthController {
     if (!email) {
       return res
         .status(400)
-        .json({ status: "error", message: "email is required" });
+        .json({ status: "error", message: "Missing Email Error" });
     }
     const action = await AuthService.ForgotPassword(email);
     if (action === -1) {
@@ -118,10 +123,10 @@ class AuthController {
         message: "Email not found",
       });
     }
-    1 // user cung cap email
-    2 // server gửi otp về email xác thực
-    3 // nhập otp xác thực -> server random password
-    4 // user đọc email vào account rồi đổi lại mật khẩu
+    1; // user cung cap email
+    2; // server gửi otp về email xác thực
+    3; // nhập otp xác thực -> server random password
+    4; // user đọc email vào account rồi đổi lại mật khẩu
     if (action === 1) {
       return res.status(429).json({
         status: "error",
@@ -148,7 +153,7 @@ class AuthController {
         status: "error",
         message: [
           email ? null : "email is required",
-          otp ? null : "otp is required",
+          otp ? null : "Missing OTP Error",
         ].filter(Boolean),
       });
     }
@@ -156,7 +161,7 @@ class AuthController {
     if (!action) {
       return res.status(401).json({
         status: "error",
-        message: "Invalid OTP",
+        message: "Invalid OTP Error",
       });
     }
     return res.status(200).json({

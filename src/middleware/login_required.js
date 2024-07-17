@@ -1,5 +1,5 @@
 const JWTFactory = require("../helper/jwt_service");
-const clientRedis = require("../databases/redis");
+const clientRedis = require("../databases/redis/session");
 const login_required = async (req, res, next) => {
   // 1. Yêu cầu AccessToken trong header
   const token = req.headers["authorization"];

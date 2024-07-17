@@ -3,7 +3,7 @@ const JWTFactory = require("../helper/jwt_service");
 const blacklistModel = require("../model/blacklist.model");
 const bcrypt = require("bcrypt");
 const { responseUser } = require("../helper/getData");
-const clientRedis = require("../databases/redis");
+const clientRedis = require("../databases/redis/session");
 const generalOTP = require("../helper/general_otp");
 const MailService = require("../helper/mail");
 const otpModel = require("../model/otp.model");
@@ -36,8 +36,6 @@ class AuthService {
     const payload = responseUser(holderUser);
     const AT = JWTFactory.generalAccessToken(payload);
     const RT = JWTFactory.generalRefreshToken(payload);
-    // 3. Thêm RefreshToken vào Redis (Tạo Session cho User)
-    await clientRedis.set(holderUser._id.toString(), RT);
     // 4. Trả metadata (AT,RT,User) về controller
     const metadata = {
       user: payload,

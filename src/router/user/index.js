@@ -4,7 +4,7 @@ const permission = require("../../middleware/permission");
 const minio = require("../../helper/minio");
 const UserService = require("../../service/user.services");
 // Admin
-router.use("/admin", login_required, permission("Admin"), require("./admin/"));
+router.use("/manage", login_required, permission("Admin"), require("./admin/"));
 // User
 router.use("/user", login_required, require("./user/"));
 // Avatar

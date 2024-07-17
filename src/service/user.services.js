@@ -1,6 +1,6 @@
 const userModel = require("../model/user.model");
 const bcrypt = require("bcrypt");
-const clientRedis = require("../databases/redis");
+const clientRedis = require("../databases/redis/session");
 class UserService {
   static GetUsers = async (page = 1) => {
     const skip = (page - 1) * 50;
@@ -10,7 +10,7 @@ class UserService {
   static FindUserById = async (id) => {
     try {
       const user = await userModel.findById(id).lean();
-      
+
       return user;
     } catch (err) {
       return null;

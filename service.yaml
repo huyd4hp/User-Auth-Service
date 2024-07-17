@@ -20,11 +20,12 @@ services:
       ACCESS_KEY: ${ACCESS_KEY}
       REFRESH_KEY: ${REFRESH_KEY}
       KAFKA_HOST: ${KAFKA_HOST}
-      REDIS_HOST: ${REDIS_HOST}
+      REDIS_SESSION_HOST: ${REDIS_SESSION_HOST}
       MINIO_HOST: ${MINIO_HOST}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       CONSUL_HOST: ${CONSUL_HOST}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     networks:
       - AuthNetwork
       - KafkaNetwork
@@ -47,11 +48,12 @@ services:
       MONGO_HOST_SLAVE_2: ${MONGO_HOST_SLAVE_2}
       MONGO_USERNAME: ${MONGO_USERNAME}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
       MONGO_DATABASE: ${MONGO_DATABASE}
       ACCESS_KEY: ${ACCESS_KEY}
       REFRESH_KEY: ${REFRESH_KEY}
       KAFKA_HOST: ${KAFKA_HOST}
-      REDIS_HOST: ${REDIS_HOST}
+      REDIS_SESSION_HOST: ${REDIS_SESSION_HOST}
       MINIO_HOST: ${MINIO_HOST}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -67,6 +69,7 @@ services:
     hostname: ${BackUp_APP_HOST}
     restart: always
     environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
       EXPOSE_PORT: ${EXPOSE_PORT}
       APP_NAME: ${BackUp_APP_NAME}
       APP_PORT: ${BackUp_APP_PORT}
@@ -82,7 +85,7 @@ services:
       ACCESS_KEY: ${ACCESS_KEY}
       REFRESH_KEY: ${REFRESH_KEY}
       KAFKA_HOST: ${KAFKA_HOST}
-      REDIS_HOST: ${REDIS_HOST}
+      REDIS_SESSION_HOST: ${REDIS_SESSION_HOST}
       MINIO_HOST: ${MINIO_HOST}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -94,12 +97,14 @@ services:
   nginx:
     image: nginx
     container_name: LoadBalanceAuthService
-    hostname: nginx
+    hostname: nginx.event
     restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/localhost.crt:/etc/ssl/certs/localhost.crt
+      - ./nginx/localhost.key:/etc/ssl/private/localhost.key
     ports:
-      - "${EXPOSE_PORT}:80"
+      - "${EXPOSE_PORT}:443"
     networks:
       - AuthNetwork
     depends_on:
