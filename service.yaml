@@ -1,7 +1,7 @@
 services:
   AuthService:
     image: auth-service
-    container_name: AuthService
+    container_name: AuthService-Master
     hostname: ${APP_HOST}
     restart: always
     environment:
@@ -95,8 +95,8 @@ services:
       - KafkaNetwork
       - ConSulNetwork
   nginx:
-    image: nginx
-    container_name: LoadBalanceAuthService
+    image: nginx:1.27.0
+    container_name: AuthService
     hostname: nginx.event
     restart: always
     volumes:
@@ -104,7 +104,7 @@ services:
       - ./nginx/localhost.crt:/etc/ssl/certs/localhost.crt
       - ./nginx/localhost.key:/etc/ssl/private/localhost.key
     ports:
-      - "${EXPOSE_PORT}:443"
+      - "${EXPOSE_PORT}:80"
     networks:
       - AuthNetwork
     depends_on:

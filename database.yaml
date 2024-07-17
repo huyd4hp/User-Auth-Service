@@ -4,8 +4,6 @@ services:
     container_name: AuthDB-Master
     restart: always
     hostname: ${MONGO_HOST_PRIMARY}
-    ports:
-      - "8000:27017"
     volumes:
       - ./database/mongodb/master:/data/db
     command: mongod --replSet rs0 --bind_ip_all
