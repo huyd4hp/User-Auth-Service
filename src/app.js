@@ -6,9 +6,10 @@ const errorHandle = require("./middleware/errorHandle");
 const apiUndefined = require("./middleware/apiUndefined");
 const logger = require("./helper/morgan");
 const cookieParser = require("cookie-parser");
-const { v4: uuidv4 } = require("uuid");
+const cors = require("./helper/cors");
 const promClient = require("prom-client");
 const router = require("./router");
+const logging = require("./logger");
 // App
 const app = express();
 app.use(cookieParser());
@@ -22,7 +23,7 @@ const httpRequestDurationMicroseconds = new promClient.Histogram({
   name: "http_request_duration_ms",
   help: "Đo thời gian phản hồi HTTP",
   labelNames: ["method", "route", "code"],
-  buckets: [50, 100, 200, 300, 400, 500, 1000], // buckets for response time from 50ms to 1000ms
+  buckets: [50, 100, 200, 300, 400, 500, 1000],
 });
 const httpRequestCounter = new promClient.Counter({
   name: "http_requests_total",
@@ -42,7 +43,6 @@ app.use((req, res, next) => {
   });
   next();
 });
-
 // Endpoint để trả về metrics
 app.get("/metrics", async (req, res) => {
   res.set("Content-Type", promClient.register.contentType);
@@ -54,30 +54,9 @@ app.get("/metrics", async (req, res) => {
   res.end(await promClient.register.metrics());
 });
 // CORS
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept,X-Request-ID"
-  );
-  res.header("Access-Control-Allow-Credentials", true);
-  next();
-});
+app.use(cors);
 // Logging
-app.use((req, res, next) => {
-  let trackingId = req.headers["x-request-id"];
-  if (!trackingId) {
-    trackingId = uuidv4();
-    req.headers["x-request-id"] = trackingId;
-    res.cookie("tracking_id", trackingId, {
-      maxAge: 900000,
-      httpOnly: false,
-      secure: false,
-      path: "/",
-    });
-  }
-  next();
-});
+app.use(logging);
 // Database
 mailService.connection();
 require("./databases/mongo");

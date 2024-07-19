@@ -11,10 +11,8 @@ const server = app.listen(APP_PORT, () => {
     port: 80,
     tags: ["NodeJS", "AuthService"],
   };
-
   // Register the service with Consul
   ConsulClient.registerService(service);
-
   // Define a new check for the service
   const check = {
     serviceId: "AuthService",
@@ -23,16 +21,13 @@ const server = app.listen(APP_PORT, () => {
     interval: "30s",
     timeout: "3s",
   };
-
   // Add the check to Consul
   ConsulClient.addCheck(check);
-
   console.log(
     colors.green("INFO:    "),
     `Application listening on ${APP_PORT}`
   );
 });
-
 process.on("SIGINT", () => {
   console.log(colors.green("INFO:    "), `Application stopped`);
   server.close();
