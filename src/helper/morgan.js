@@ -1,6 +1,15 @@
 const morgan = require("morgan");
 const colors = require("colors");
+const path = require("path");
+const fs = require("fs");
 
+const logPath = path.join(__dirname, "logs");
+
+if (!fs.existsSync(logPath)) {
+  fs.mkdirSync(logPath);
+}
+
+const logFile = path.join(logPath, "app.log");
 morgan.format("custom", function (tokens, req, res) {
   return [
     colors.green(`Method: ${tokens.method(req, res)}`), // Phương thức HTTP
@@ -11,4 +20,9 @@ morgan.format("custom", function (tokens, req, res) {
     `Status: ${tokens.status(req, res)}`, // Mã trạng thái
   ].join("  |  ");
 });
-module.exports = morgan("custom");
+
+const logger = morgan("custom", {
+  stream: fs.createWriteStream(logFile, { flags: "a" }),
+});
+
+module.exports = logger;
