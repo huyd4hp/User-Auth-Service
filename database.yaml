@@ -1,64 +1,64 @@
 services:
   mongo-primary:
     image: mongo:5
-    container_name: AuthDB-Master
-    restart: always
+    container_name: ${MONGO_HOST_PRIMARY}
     hostname: ${MONGO_HOST_PRIMARY}
-    volumes:
-      - ./database/mongodb/master:/data/db
-    command: mongod --replSet rs0 --bind_ip_all
-    networks:
-      - AuthNetwork
-
-  mongo-slave-1:
-    image: mongo:5
-    container_name: AuthDB-Slave-1
     restart: always
-    hostname: ${MONGO_HOST_SLAVE_1}
     volumes:
-      - ./database/mongodb/slave-1:/data/db
+      - ./database/mongodb/primary:/data/db
     command: mongod --replSet rs0 --bind_ip_all
     networks:
-      - AuthNetwork
+      - AuthDatabaseNetwork
 
-  mongo-slave-2:
+  mongo-secondary-1:
     image: mongo:5
-    container_name: AuthDB-Slave-2
+    container_name: ${MONGO_HOST_SECONDARY_1}
     restart: always
-    hostname: ${MONGO_HOST_SLAVE_2}
+    hostname: ${MONGO_HOST_SECONDARY_1}
     volumes:
-      - ./database/mongodb/slave-2:/data/db
+      - ./database/mongodb/secondary-1:/data/db
     command: mongod --replSet rs0 --bind_ip_all
     networks:
-      - AuthNetwork
+      - AuthDatabaseNetwork
+
+  mongo-secondary-2:
+    image: mongo:5
+    container_name: ${MONGO_HOST_SECONDARY_2}
+    restart: always
+    hostname: ${MONGO_HOST_SECONDARY_2}
+    volumes:
+      - ./database/mongodb/secondary-2:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - AuthDatabaseNetwork
 
   redis-session:
     image: redis:7.2.5
-    container_name: RedisSession
+    container_name: ${REDIS_SESSION_HOST}
     restart: always
     hostname: ${REDIS_SESSION_HOST}
     volumes:
-      - ./database/redis-stack:/data
+      - ./database/redis:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     networks:
-      - AuthNetwork
+      - AuthDatabaseNetwork
 
   minio:
     image: minio/minio:latest
-    container_name: Minio-UserAvatar
-    restart: always
+    container_name: ${MINIO_HOST}
     hostname: ${MINIO_HOST}
+    restart: always
     volumes:
       - ./minio:/data
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     networks:
-      - AuthNetwork
+      - AuthDatabaseNetwork
     command: server --console-address ":9001" /data
 
 networks:
-  AuthNetwork:
+  AuthDatabaseNetwork:
     external: true
     driver: bridge

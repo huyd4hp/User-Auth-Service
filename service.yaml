@@ -12,8 +12,8 @@ services:
       EMAIL: ${EMAIL}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       MONGO_HOST_PRIMARY: ${MONGO_HOST_PRIMARY}
-      MONGO_HOST_SLAVE_1: ${MONGO_HOST_SLAVE_1}
-      MONGO_HOST_SLAVE_2: ${MONGO_HOST_SLAVE_2}
+      MONGO_HOST_SECONDARY_1: ${MONGO_HOST_SECONDARY_1}
+      MONGO_HOST_SECONDARY_2: ${MONGO_HOST_SECONDARY_2}
       MONGO_USERNAME: ${MONGO_USERNAME}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       MONGO_DATABASE: ${MONGO_DATABASE}
@@ -22,14 +22,13 @@ services:
       KAFKA_HOST: ${KAFKA_HOST}
       REDIS_SESSION_HOST: ${REDIS_SESSION_HOST}
       MINIO_HOST: ${MINIO_HOST}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       CONSUL_HOST: ${CONSUL_HOST}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     networks:
-      - AuthNetwork
-      - KafkaNetwork
-      - ConSulNetwork
+      - AuthDatabaseNetwork
+      - ServiceNetwork
 
   Sub-AuthService:
     image: auth-service
@@ -44,8 +43,8 @@ services:
       EMAIL: ${EMAIL}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       MONGO_HOST_PRIMARY: ${MONGO_HOST_PRIMARY}
-      MONGO_HOST_SLAVE_1: ${MONGO_HOST_SLAVE_1}
-      MONGO_HOST_SLAVE_2: ${MONGO_HOST_SLAVE_2}
+      MONGO_HOST_SECONDARY_1: ${MONGO_HOST_SECONDARY_1}
+      MONGO_HOST_SECONDARY_2: ${MONGO_HOST_SECONDARY_2}
       MONGO_USERNAME: ${MONGO_USERNAME}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -55,13 +54,12 @@ services:
       KAFKA_HOST: ${KAFKA_HOST}
       REDIS_SESSION_HOST: ${REDIS_SESSION_HOST}
       MINIO_HOST: ${MINIO_HOST}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       CONSUL_HOST: ${CONSUL_HOST}
     networks:
-      - AuthNetwork
-      - KafkaNetwork
-      - ConSulNetwork
+      - AuthDatabaseNetwork
+      - ServiceNetwork
 
   BackUp-AuthService:
     image: auth-service
@@ -77,8 +75,8 @@ services:
       EMAIL: ${EMAIL}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       MONGO_HOST_PRIMARY: ${MONGO_HOST_PRIMARY}
-      MONGO_HOST_SLAVE_1: ${MONGO_HOST_SLAVE_1}
-      MONGO_HOST_SLAVE_2: ${MONGO_HOST_SLAVE_2}
+      MONGO_HOST_SECONDARY_1: ${MONGO_HOST_SECONDARY_1}
+      MONGO_HOST_SECONDARY_2: ${MONGO_HOST_SECONDARY_2}
       MONGO_USERNAME: ${MONGO_USERNAME}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       MONGO_DATABASE: ${MONGO_DATABASE}
@@ -87,36 +85,30 @@ services:
       KAFKA_HOST: ${KAFKA_HOST}
       REDIS_SESSION_HOST: ${REDIS_SESSION_HOST}
       MINIO_HOST: ${MINIO_HOST}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       CONSUL_HOST: ${CONSUL_HOST}
     networks:
-      - AuthNetwork
-      - KafkaNetwork
-      - ConSulNetwork
+      - AuthDatabaseNetwork
+      - ServiceNetwork
   nginx:
     image: nginx:1.27.0
     container_name: AuthService
-    hostname: nginx.event
+    hostname: nginx.auth
     restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - "${EXPOSE_PORT}:80"
     networks:
-      - AuthNetwork
+      - ServiceNetwork
     depends_on:
       - AuthService
       - Sub-AuthService
       - BackUp-AuthService
 
 networks:
-  AuthNetwork:
+  ServiceNetwork:
     external: true
     driver: bridge
-  KafkaNetwork:
-    external: true
-    driver: bridge
-  ConSulNetwork:
+  AuthDatabaseNetwork:
     external: true
     driver: bridge
