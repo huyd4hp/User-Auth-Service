@@ -62,7 +62,7 @@ mailService.connection();
 require("./databases/mongo");
 clientRedis.connect();
 // Router
-app.use("/api/v1", router);
+app.use("/v1", router);
 // Handle error
 app.use(apiUndefined);
 app.use(errorHandle);
