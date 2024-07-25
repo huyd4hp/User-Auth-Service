@@ -19,9 +19,9 @@ const responseUser = (user) => {
     "address",
   ]);
   if (EXPOSE_DOMAIN) {
-    pickedUser.avatar = `http://${EXPOSE_DOMAIN}/api/v1/avatar/${pickedUser.avatar}`;
+    pickedUser.avatar = `http://${EXPOSE_DOMAIN}/auth/v1/avatar/${pickedUser.avatar}`;
   } else {
-    pickedUser.avatar = `http://${EXPOSE_HOST}:${EXPOSE_PORT}/api/v1/avatar/${pickedUser.avatar}`;
+    pickedUser.avatar = `http://${EXPOSE_HOST}:${EXPOSE_PORT}/auth/v1/avatar/${pickedUser.avatar}`;
   }
 
   return pickedUser;

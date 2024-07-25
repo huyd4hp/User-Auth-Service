@@ -7,7 +7,7 @@ const server = app.listen(APP_PORT, () => {
   const service = {
     id: "AuthService",
     name: "AuthService",
-    address: "api.eventhub",
+    address: "nginx.auth",
     port: 80,
     tags: ["NodeJS", "AuthService"],
   };
@@ -17,7 +17,7 @@ const server = app.listen(APP_PORT, () => {
   const check = {
     serviceId: "AuthService",
     name: `${APP_NAME} Health Check`,
-    http: `http://${APP_HOST}:${APP_PORT}/api/v1/health`,
+    http: `http://${APP_HOST}:${APP_PORT}/v1/health`,
     interval: "30s",
     timeout: "3s",
   };
